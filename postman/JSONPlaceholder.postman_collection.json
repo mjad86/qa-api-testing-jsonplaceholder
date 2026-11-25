@@ -1,0 +1,201 @@
+{
+  "info": {
+    "_postman_id": "8a52afdd-6ac7-44b2-a4c9-badb0fba729b",
+    "name": "JSONPlaceholder",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "60423497",
+    "_collection_link": "https://go.postman.co/collection/60423497-8a52afdd-6ac7-44b2-a4c9-badb0fba729b?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get Single post",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Test 1: the request must return status 200\r\npm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\n// Test 2: the response must arrive in a reasonable time\r\npm.test(\"Response time is under 2000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\n// Test 3: the body must contain the expected fields and the right post\r\npm.test(\"Response has the expected fields\", function () {\r\n    const body = pm.response.json();\r\n    pm.expect(body).to.have.property(\"userId\");\r\n    pm.expect(body).to.have.property(\"id\", 1);\r\n    pm.expect(body).to.have.property(\"title\");\r\n    pm.expect(body).to.have.property(\"body\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/posts/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "posts",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All posts",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\n// The API returns 100 posts in total\r\npm.test(\"Response is an array of 100 posts\", function () {\r\n    const posts = pm.response.json();\r\n    pm.expect(posts).to.be.an(\"array\");\r\n    pm.expect(posts).to.have.lengthOf(100);\r\n});\r\n\r\n// Checking the first post as a sample of the structure\r\npm.test(\"First post has exactly the expected fields\", function () {\r\n    const first = pm.response.json()[0];\r\n    pm.expect(first).to.have.all.keys(\"userId\", \"id\", \"title\", \"body\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/posts",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "posts"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Post",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// POST that creates a resource should return 201 Created, not 200\r\npm.test(\"Status code is 201 Created\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\n// The API must return the same data we sent\r\npm.test(\"Response echoes the data we sent\", function () {\r\n    const body = pm.response.json();\r\n    pm.expect(body.title).to.eql(\"QA test post\");\r\n    pm.expect(body.body).to.eql(\"Created from Postman\");\r\n    pm.expect(body.userId).to.eql(1);\r\n});\r\n\r\npm.test(\"Response includes a new id\", function () {\r\n    pm.expect(pm.response.json()).to.have.property(\"id\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"title\": \"QA test post\",\r\n    \"body\": \"Created from Postman\",\r\n    \"userId\": 1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/posts",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "posts"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Non-Existent Post",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// A post that does not exist must return 404\r\npm.test(\"Status code is 404 Not Found\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Body is empty for a post that does not exist\", function () {\r\n    pm.expect(pm.response.json()).to.be.empty;\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/posts/9999",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "posts",
+            "9999"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Post",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\n// The API must return the updated values, not the old ones\r\npm.test(\"Response contains the updated data\", function () {\r\n    const body = pm.response.json();\r\n    pm.expect(body.title).to.eql(\"Updated title\");\r\n    pm.expect(body.body).to.eql(\"Updated from Postman\");\r\n});\r\n\r\n// The id must stay the same: we updated post 1, not created a new one\r\npm.test(\"Post id is still 1\", function () {\r\n    pm.expect(pm.response.json().id).to.eql(1);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id\": 1,\r\n    \"title\": \"Updated title\",\r\n    \"body\": \"Updated from Postman\",\r\n    \"userId\": 1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/posts/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "posts",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Post",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\n// This API returns an empty object after deleting\r\npm.test(\"Response body is empty\", function () {\r\n    pm.expect(pm.response.json()).to.be.empty;\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/posts/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "posts",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
